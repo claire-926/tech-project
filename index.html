@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>軟體工程師 - 量化交易專家</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        body.light-theme {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            color: #1e293b;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .light-theme .theme-toggle {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .light-theme .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .light-theme .particle {
+            background: rgba(59, 130, 246, 0.4);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 10;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .light-theme .title {
+            color: #64748b;
+        }
+
+        .description {
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        .light-theme .description {
+            color: #475569;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .light-theme .tech-tag {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .tech-tag:hover {
+            transform: translateY(-2px);
+            background: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .links-section {
+            position: relative;
+            z-index: 10;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .light-theme .link-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card:nth-child(even) {
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .link-card:hover::before {
+            left: 100%;
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .light-theme .link-card:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .link-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .github { background: linear-gradient(135deg, #333, #666); }
+        .email { background: linear-gradient(135deg, #ea4335, #fbbc05); }
+        .linkedin { background: linear-gradient(135deg, #0077b5, #00a0dc); }
+        .instagram { background: linear-gradient(135deg, #e4405f, #f77737, #fcaf45); }
+
+        .link-card:hover .link-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .link-info {
+            flex: 1;
+        }
+
+        .link-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .link-subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .light-theme .link-subtitle {
+            color: #64748b;
+        }
+
+        .link-arrow {
+            font-size: 20px;
+            transition: all 0.3s ease;
+            color: #3b82f6;
+        }
+
+        .link-card:hover .link-arrow {
+            transform: translateX(5px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            position: relative;
+            z-index: 10;
+        }
+
+        .light-theme .footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .name {
+                font-size: 2rem;
+            }
+
+            .title {
+                font-size: 1rem;
+            }
+
+            .description {
+                font-size: 1rem;
+            }
+
+            .tech-stack {
+                gap: 10px;
+            }
+
+            .tech-tag {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+
+            .link-content {
+                gap: 15px;
+            }
+
+            .link-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .name {
+                font-size: 1.8rem;
+            }
+
+            .tech-stack {
+                gap: 8px;
+            }
+
+            .link-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">深色模式</span>
+    </div>
+
+    <div class="container">
+        <div class="profile-section">
+            <div class="avatar">
+                <span>QT</span>
+            </div>
+            <h1 class="name">量化交易工程師</h1>
+            <p class="title">軟體工程師 • 演算法交易專家 • 自動化系統開發者</p>
+            <p class="description">
+                專精於量化交易策略開發與金融科技創新，致力於運用先進的演算法和機器學習技術，
+                打造高效能的自動化交易系統。擁有豐富的後端開發經驗，熟悉大數據處理與即時系統架構設計。
+            </p>
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">機器學習</span>
+                <span class="tech-tag">量化分析</span>
+                <span class="tech-tag">演算法交易</span>
+                <span class="tech-tag">區塊鏈</span>
+                <span class="tech-tag">大數據</span>
+            </div>
+        </div>
+
+        <div class="links-section">
+            <div class="link-card" onclick="openLink('https://github.com')">
+                <div class="link-content">
+                    <div class="link-icon github">
+                        <span>📊</span>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">GitHub</div>
+                        <div class="link-subtitle">開源專案與量化交易工具</div>
+                    </div>
+                    <div class="link-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="link-card" onclick="openEmail()">
+                <div class="link-content">
+                    <div class="link-icon email">
+                        <span>✉️</span>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Email</div>
+                        <div class="link-subtitle">商業合作與技術交流</div>
+                    </div>
+                    <div class="link-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="link-card" onclick="openLink('https://linkedin.com')">
+                <div class="link-content">
+                    <div class="link-icon linkedin">
+                        <span>💼</span>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">LinkedIn</div>
+                        <div class="link-subtitle">專業經歷與職涯發展</div>
+                    </div>
+                    <div class="link-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="link-card" onclick="openLink('https://instagram.com')">
+                <div class="link-content">
+                    <div class="link-icon instagram">
+                        <span>📱</span>
+                    </div>
+                    <div class="link-info">
+                        <div class="link-title">Instagram</div>
+                        <div class="link-subtitle">技術分享與生活動態</div>
+                    </div>
+                    <div class="link-arrow">→</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 量化交易工程師 • 專注於金融科技創新</p>
+        </div>
+    </div>
+
+    <script>
+        // 粒子動畫
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 主題切換
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.classList.toggle('light-theme');
+            
+            if (body.classList.contains('light-theme')) {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = '亮色模式';
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = '深色模式';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 載入儲存的主題
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('theme-icon').textContent = '☀️';
+                document.getElementById('theme-text').textContent = '亮色模式';
+            }
+        }
+
+        // 開啟連結
+        function openLink(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        // 開啟 Email
+        function openEmail() {
+            window.open('mailto:your.email@example.com?subject=商業合作諮詢', '_blank', 'noopener,noreferrer');
+        }
+
+        // 滾動動畫
+        function handleScrollAnimation() {
+            const cards = document.querySelectorAll('.link-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            cards.forEach((card) => {
+                observer.observe(card);
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            loadTheme();
+            handleScrollAnimation();
+            
+            // 為卡片添加進場動畫延遲
+            const cards = document.querySelectorAll('.link-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+
+        // 滑鼠移動視差效果
+        document.addEventListener('mousemove', function(e) {
+            const particles = document.querySelectorAll('.particle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            particles.forEach((particle, index) => {
+                const speed = (index % 5 + 1) * 0.5;
+                const xPos = (x - 0.5) * speed;
+                const yPos = (y - 0.5) * speed;
+                particle.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984f5329235f8412',t:'MTc1ODg1MzY3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
